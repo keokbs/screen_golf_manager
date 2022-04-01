@@ -13,4 +13,9 @@ public class TestController {
 		return "Hello world!";
 	}
 	
+	@RequestMapping("/jsp_test")
+	public String jspTest() {
+		return "test/test";
+	}
+	
 }

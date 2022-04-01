@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+body {
+	background-image : url("/static/images/golf-1280.jpg");
+    background-size : cover;
+	background-color: #c0ede0;
+}
+
+.sign-in-box {
+	width: 1000px;
+	height: 1000px;
+}
+
+.sign-box {
+	width: 460px;
+	height: 500px;
+}
+
+.small-box {
+	width: 500px;
+	height: 500px;
+}
+
+.logo-font-style {
+	font-size: 36px;
+}

@@ -16,24 +16,106 @@
 <link rel="stylesheet" type="text/css" href="/static/css/userStyle.css">
 </head>
 <body>
-	<div class="d-flex justify-content-center align-items-center">
-		<div class="d-flex justify-content-center align-items-center sign-in-box">
-			<div class="small-box"><img src="/static/images/golf_640.png" alt="golfers" width="500px" height="500px"></div>
-			<div class="small-box w-50 d-flex justify-content-center">
-				<div class="sign-box bg-white">
-					<div class="logo-font-style font-weight-bold d-flex justify-content-center"><div class="m-4">Screen Golf Manager</div></div>
-					<div class="d-flex justify-content-center"><img src="/static/images/user.png" alt="profileImage" width="80px"></div>
-					<div><input type="text" class="form-control mb-3"></div>
-					<div><input type="text" class="form-control mb-1"></div>
-					<div class="wraning-coment text-danger"><small>일치하는 정보가 없습니다. 다시 한번 입력해주세요.</small></div>
-					<div><button class="btn btn-success w-100">로그인</button></div>
-					<div class="d-flex justify-content-around">
-						<div><a href="#">아이디/비밀번호 찾기</a></div>
-						<div><a href="#">회원가입하기</a></div>
+	<div id="sign-in-bg">
+		<div class="d-flex justify-content-center align-items-center">
+			<div class="d-flex justify-content-center align-items-center sign-box">
+				<div class="small-box"><img src="/static/images/golf_640.png" alt="golfers" width="500px" height="500px"></div>
+				<div class="small-box w-50 d-flex justify-content-center">
+					<div class="sign-in-box bg-white d-flex align-items-center justify-content-center">
+						<div class="pb-5">
+							<form id="loginForm" method="post" action="/user/sign_in">
+								<div class="logo-font-style font-weight-bold d-flex justify-content-center"><div class="mb-3">Screen Golf Manager</div></div>
+								<div class="d-flex justify-content-center"><img src="/static/images/user.png" alt="profileImage" width="80px"></div>
+								<div class="d-flex justify-content-center">
+									<div class="mt-3 login-box">
+										<div class="d-flex justify-content-center"><input type="text" class="form-control mb-2 input-size-id" placeholder="아이디" name="loginId" id="loginId"></div>
+										<div class="d-flex justify-content-center"><input type="password" class="form-control input-size-id" placeholder="비밀번호" name="password" id="password"></div>
+									</div>
+								</div>
+								<div class="d-flex justify-content-center mt-2">
+									<div class="invisible-box d-flex align-items-center">
+										<div class="text-danger wraning-coment d-none" id="checkID">아이디를 입력해주세요.</div>
+										<div class="text-danger wraning-coment d-none" id="checkIDLength">아이디는 4 ~ 20자만 가능합니다.</div>
+										<div class="text-danger wraning-coment d-none" id="checkPassword">비밀번호를 입력해주세요.</div>
+										<div class="text-danger wraning-coment d-none" id="noInfomation">일치하는 아이디 또는 비밀번호가 없습니다.</div>
+									</div>
+								</div>
+								<div class="d-flex justify-content-center">
+									<div class="login-btn-size">
+										<button class="btn btn-success w-100" id="login-btn">로그인</button>
+									</div>
+								</div>
+							</form>
+							<div class="d-flex justify-content-center mt-2">
+								<div class="d-flex justify-content-between input-size-id">
+									<div><a href="/user/find_id_password_view" class="sign-a-font-size">아이디/비밀번호 찾기</a></div>
+									<div><a href="/user/sign_up_view" class="sign-a-font-size">회원가입하기</a></div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </body>
+
+<script>
+$(document).ready(function() {
+	// alert("ok?");
+	
+	$("#loginForm").on('submit', function(e) {
+		e.preventDefault();
+		
+		let loginId = $("#loginId").val().trim();
+		let password = $("#password").val().trim();
+		
+		$('#checkID').addClass("d-none");
+		$('#checkIDLength').addClass("d-none");
+		$('#checkPassword').addClass("d-none");
+		$('#noInfomation').addClass("d-none");
+		
+		// 아이디 빈칸 확인
+		if (loginId == '') {
+			$('#checkID').removeClass("d-none");
+			return;
+		}
+		
+		// 아이디 길이 확인 (4자에서 20자)
+		if (loginId.length < 4 || loginId.length >20) {
+			$('#checkIDLength').removeClass("d-none");
+			return;
+		}
+		
+		// 비밀번호 빈칸 확인
+		if (password == '') {
+			$('#checkPassword').removeClass("d-none");
+			return;
+		}
+		
+		// 받은 아이디와 비밀번호를 대조해서 없는 정보일 경우 아이디와 비번의 값을 빈칸으로 만든다.
+		let url = $(this).attr("action");
+		// ajax에서 각각의 name을 쓰지않고 묶어서 전송
+		let params = $(this).serialize();
+		
+		$.post(url, params)
+		.done(function(data) {
+			if(data.result == "success") {
+				location.href="/booking/main_view"
+			}
+			
+			if(data.result == "error") {
+				$('#noInfomation').removeClass("d-none");
+				return;
+			}
+		});
+		
+		
+	});
+	
+});
+</script>
+
+
+
 </html>

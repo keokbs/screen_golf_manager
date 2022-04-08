@@ -1,19 +1,21 @@
 @charset "UTF-8";
 
-body {
-	background-image : url("/static/images/golf-1280.jpg");
+#sign-in-bg {
+	height: 100vh;
+	background-image : url("/static/images/golf-course_1280.jpg");
     background-size : cover;
-	background-color: #c0ede0;
-}
-
-.sign-in-box {
-	width: 1000px;
-	height: 1000px;
+	background-color: rgb(136, 208, 221);
 }
 
 .sign-box {
+	width: 1000px;
+	height: 700px;
+}
+
+.sign-in-box {
 	width: 460px;
 	height: 500px;
+	border-radius: 3%;
 }
 
 .small-box {
@@ -24,3 +26,83 @@ body {
 .logo-font-style {
 	font-size: 36px;
 }
+
+.login-box {
+	width: 440px;
+	height: 80px;
+}
+
+.input-size-id {
+	width: 300px;
+	height: 35px;
+}
+
+.invisible-box {
+	width: 300px;
+	height: 20px;
+}
+
+.wraning-coment {
+	width: 300px;
+	height: 30px;
+	font-size: 10px;
+}
+
+.login-btn-size {
+	width: 300px;
+}
+
+.login-box input {
+	font-size: 13px;
+}
+
+.a-size {
+	width: 300px;
+	height: 30px;
+}
+
+.sign-a-font-size {
+	font-size: 13px;
+}
+
+#sign-up-bg {
+	height: 100vh;
+	background-image : url("/static/images/golf-course_sign_up_1280.jpg");
+    background-size : cover;
+	background-color: rgb(136, 208, 221);
+}
+
+.sign-up-box {
+	width: 500px;
+	height: 660px;
+}
+
+.sign-up-head-font {
+	height: 80px;
+	font-size: 38px;
+}
+
+.input-box {
+	width: 400px;
+	height: 500px;
+}
+
+.input-box-font {
+	font-size: 16px;
+}
+
+#sign-in-btn {
+	width: 150px;
+	border: 0px;
+	outline: 0px;
+	background-color: #fff;
+}
+
+#sign-up-btn {
+	width: 150px;
+	border: 0px;
+	outline: 0px;
+	background-color: #fff;
+	color: #4fa892;
+}
+

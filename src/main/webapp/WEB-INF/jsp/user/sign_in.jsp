@@ -106,6 +106,8 @@ $(document).ready(function() {
 			
 			if(data.result == "error") {
 				$('#noInfomation').removeClass("d-none");
+				loginId = $("#loginId").val("");
+				password = $("#password").val("");
 				return;
 			}
 		});

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,7 +53,7 @@ public class UserRestController {
 			session.setAttribute("userLoginId", user.getLoginId());
 			session.setAttribute("userStoreName", user.getStoreName());
 			session.setAttribute("userName", user.getName());
-			session.setMaxInactiveInterval(60*120) ;
+			session.setMaxInactiveInterval(60*120);
 
 		} else {
 			result.put("result", "error");
@@ -61,4 +62,47 @@ public class UserRestController {
 		
 		return result; 
 	}
+	
+	@GetMapping("/is_duplicated_id")
+	public Map<String, Object> is_duplicated_id(
+			@RequestParam String loginId) {
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("result", "success");
+		
+		User user = userBO.getUserByLoginId(loginId);
+		
+		if (user == null) { // 중복이 없다면
+			result.put("result", "error");
+		}
+		
+		return result;
+	}
+	
+	@PostMapping("/sign_up")
+	public Map<String, Object> sign_up(
+			@RequestParam("loginId") String loginId,
+			@RequestParam("name") String name,
+			@RequestParam("password") String password,
+			@RequestParam("phoneNumber") int phoneNumber,
+			@RequestParam("storeName") String storeName
+			) {
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("result", "success");
+		
+		// 비밀번호 암호화
+		String EncryptPassword = EncryptUtils.md5(password);
+		
+		// 정보 db에 담기
+		int rowCount = userBO.addUser(loginId, name, EncryptPassword, phoneNumber, storeName); // bo
+		
+		// DB에 insert 안댈 시 countRow = 0
+		if (rowCount == 0) {
+			result.put("result", "error");
+		}
+		
+		return result;
+	}
+	
 }

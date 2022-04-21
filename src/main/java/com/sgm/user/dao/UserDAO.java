@@ -14,4 +14,15 @@ public interface UserDAO {
 	public User selectUserByLoginPassword(
 			@Param("loginId") String loginId, 
 			@Param("password") String password);
+	
+	public User selectUserByLoginId(
+			@Param("loginId") String loginId);
+	
+	public int insertUser(
+			@Param("loginId") String loginId, 
+			@Param("name") String name, 
+			@Param("password") String password, 
+			@Param("phoneNumber") int phoneNumber, 
+			@Param("storeName") String storeName
+			);
 }

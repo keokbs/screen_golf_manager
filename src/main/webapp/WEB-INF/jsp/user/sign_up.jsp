@@ -23,6 +23,7 @@
 			</div>
 			<div class="d-flex justify-content-center align-items-center">
 				<div class="input-box input-box-font">
+			<!-- form -->		
 					<form method="post" action="/user/sign_up" id="signUpForm">
 						<!-- 아이디 -->
 						<div class="mb-2 d-flex justify-content-between">
@@ -32,50 +33,54 @@
 							<div class="small text-success d-none" id="availableLoginId">사용 가능한 아이디 입니다.</div>
 						</div>
 						<div class="d-flex justify-content-between">
-							<input type="text" class="form-control col-9" placeholder="4~20자만 가능합니다." name="loginId">
-							<button type="button" class="btn">중복확인</button>
+							<input type="text" class="form-control col-9" placeholder="4~20자만 가능합니다." name="loginId" id="loginId">
+							<button type="button" class="btn" id="duplicateBtn">중복확인</button>
 						</div>
+						
 						<!-- 이름 -->
 						<div class="my-2">이름*</div>
-						<input type="text" class="form-control" name="name">
+						<input type="text" class="form-control" name="name" id="name">
+						
 						<!-- 비번 -->
 						<div class="my-2 d-flex justify-content-between">
 							<div>비밀번호*</div>
 							<div class="small text-danger d-none" id="passwordLengthCheck">4~20자만 가능합니다.</div>
 						</div>
 						<div class="d-flex justify-content-between">
-							<input type="text" class="form-control" placeholder="비밀번호는 4자 이상만 가능합니다." name="password">
+							<input type="password" class="form-control" placeholder="비밀번호는 4자 이상만 가능합니다." name="password" id="password">
 						</div>
+						
 						<!-- 비번확인 -->
 						<div class="my-2 d-flex justify-content-between">
 							<div>비밀번호 확인*</div>
-							<div class="small text-danger d-none" id="passwordLengthCheck">일치하지 않습니다.</div>
+							<div class="small text-danger d-none" id="doNotMatch">일치하지 않습니다.</div>
 						</div>
 						<div class="d-flex justify-content-between">
-							<input type="text" class="form-control" name="passwordCheck">
+							<input type="password" class="form-control" name="passwordCheck" id="passwordCheck">
 						</div>
-						<!-- 전화번호 -->
+						
+						<!-- 핸드폰 번호 -->
 						<div class="my-2 d-flex justify-content-between">
-							<div>전화번호* (-)을 제외하고 적어주세요.</div>
-							<div class="small text-danger d-none" id="passwordLengthCheck">일치하지 않습니다.</div>
+							<div>핸드폰 번호* <small>(-)을 제외하고 적어주세요.</small></div>
 						</div>
 						<div class="d-flex justify-content-between">
-							<input type="text" class="form-control" placeholder="예시) 01012345678" name="phoneNumber">
+							<input type="text" class="form-control" placeholder="예시) 01012345678" name="phoneNumber" id="phoneNumber"  maxlength="11">
 						</div>
+						
 						<!-- 골프장 이름 -->
 						<div class="my-2">
 							<div>스크린 골프장 이름*</div>
 						</div>
 						<div class="d-flex justify-content-between">
-							<input type="text" class="form-control" name="storeName">
+							<input type="text" class="form-control" name="storeName" id="storeName">
 						</div>
 						<div class="invisible-box">
-							<div class="small text-danger mt-1 d-none" id="signUpCheck">양식에 맞게 작성해주세요.</div>
 						</div>
 						<hr>
+						<!-- 로그인, 회원가입 버튼 -->
 						<div class="d-flex justify-content-between align-items-center pb-2">
 							<button type="button" class="btn btn-white font-weight-bold" id="sign-in-btn">로그인 화면</button>
-							<button type="button" class="btn btn-white font-weight-bold" id="sign-up-btn">회원가입</button>
+							<button type="submit" class="btn btn-white font-weight-bold" id="sign-up-btn">회원가입</button>
 						</div>
 					</form>
 				</div>
@@ -83,4 +88,170 @@
 		</div>
 	</div>
 </body>
+<script>
+
+$(document).ready(function(e) {
+	
+	// 중복확인 버튼
+	$('#duplicateBtn').on('click', function(e) {
+		
+		let loginId = $('#loginId').val().trim();
+		// alert(loginId);
+		
+		$('#duplicateLoginId').addClass('d-none');
+		$('#loginIdLengthCheck').addClass('d-none');
+		$('#availableLoginId').addClass('d-none');
+		
+		if (loginId == "") {
+			alert("아이디를 입력해주세요.");
+			return;
+		}
+		
+		$.ajax ({
+			type : 'GET'
+			, url: "/user/is_duplicated_id"
+			, data: {"loginId": loginId}
+			, success: function(data) {
+				if (data.result == "success") {
+					// 중복
+					$('#duplicateLoginId').removeClass('d-none');
+				} else {
+					// 중복 X -> 사용가능
+					$('#availableLoginId').removeClass('d-none');
+				}
+			}
+			, error: function(e) {
+				// 에러
+				alert("중복확인에 실패했습니다. 관리자에게 문의해주세요.");
+			}
+		});
+	});
+	
+	// 비밀번호 확인 
+	
+	$('#password').on('keyup', function(e) {
+		
+		let password = $('#password').val().trim();
+		let passwordCheck = $('#passwordCheck').val().trim();
+		
+		$('#passwordLengthCheck').addClass('d-none');
+		$('#doNotMatch').addClass('d-none');
+		
+		if (password.length>20 || password.length<4) {
+			$('#passwordLengthCheck').removeClass('d-none');
+			return;
+		}
+		
+		if (password != passwordCheck && passwordCheck != '') {
+			$('#doNotMatch').removeClass('d-none');
+			return;
+		}
+
+	});
+	
+	// 비밀번호 확인
+	$('#passwordCheck').on('keyup', function(e) {
+		
+		let password = $('#password').val().trim();
+		let passwordCheck = $('#passwordCheck').val().trim();
+		
+		$('#passwordLengthCheck').addClass('d-none');
+		$('#doNotMatch').addClass('d-none');
+
+		if (password != passwordCheck && passwordCheck != '') {
+			$('#doNotMatch').removeClass('d-none');
+			return;
+		}
+
+	});
+	
+	// 전화번호 양식 - 숫자만 나오게하기
+	$('#phoneNumber').on('keyup', function () {
+	    $(this).val($(this).val().replace(/[^0-9]/g, ""));
+	});
+	
+	// 회원가입 
+	$('#signUpForm').on('submit', function(e) {
+		e.preventDefault();
+		
+		let loginId = $('#loginId').val().trim();
+		let name = $('#name').val().trim();
+		let password = $('#password').val().trim();
+		let passwordCheck = $('#passwordCheck').val().trim();
+		let phoneNumber = $('#phoneNumber').val().trim();
+		let storeName = $('#storeName').val();
+		
+		// 경고 멘트 가리기
+		$('#phoneNumberCheck').addClass('d-none');
+		$('#signUpCheck').addClass('d-none');
+		
+		// 유효성 검사
+		if (loginId == "") {
+			alert("아이디를 입력해주세요.");
+			return;
+		}
+		
+		if ($('#availableLoginId').hasClass('d-none')) { // 사용가능한 아이디라고 떠있지 않았을 때
+			alert("아이디 중복확인이 필요합니다.");
+			return;
+		}
+		
+		if (name == "") {
+			alert("이름을 입력해주세요.");
+			return;
+		}
+		
+		if (password == "" || passwordCheck == "") {
+			alert("비밀번호를 입력해주세요.");
+			return;
+		}
+		
+		if (!$('#passwordLengthCheck').hasClass('d-none')) { // 비밀번호 길이 경고문구가 떠있을 때
+			alert("비밀번호의 양식이 올바르지 않습니다.");
+			return;
+		}
+		
+		if (!$('#doNotMatch').hasClass('d-none')) { // 비밀번호가 일치하지 않는다고 떠있을 때
+			alert("비밀번호가 일치하지않습니다.");
+			return;
+		}
+		
+		if (phoneNumber == "") {
+			alert("핸드폰 번호를 입력해주세요.");
+			return;
+		}
+		
+		if (storeName == "") {
+			alert("가게 이름을 입력해주세요.");
+			return;
+		}
+		
+		let url = $(this).attr('action');
+		let params = $(this).serialize();
+		console.log(params);
+		
+		$.post(url, params)
+		.done(function(data) {
+			if(data.result == "success") {
+				alert(name + "님의 회원가입을 환영합니다.");
+				location.href="/user/sign_in_view";
+			} else {
+				alert("회원가입에 실패했습니다. 관리자에게 문의해주세요.");
+				return;
+			}
+		});
+		
+	});
+	
+	// 로그인 화면
+	$('#sign-in-btn').on('click', function(e) {
+		location.href = "/user/sign_in_view";
+	});
+	
+});
+
+</script>
+
+
+
 </html>
